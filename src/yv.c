@@ -1,5 +1,6 @@
 #include "yv.h"
 #include "yv_www.h"
+#include "yv/yv_macos_menu.h"
 
 #include <webview/webview.h>
 
@@ -24,6 +25,9 @@ void run(void) {
 
     webview_set_title(webview, "yv");
     webview_set_size(webview, 800, 600, WEBVIEW_HINT_NONE);
+    
+    yv_macos_menu_setup();
+
     webview_navigate(webview, url);
 
     webview_run(webview);

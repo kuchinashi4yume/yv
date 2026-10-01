@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(yv LANGUAGES C CXX)
+project(yv LANGUAGES C CXX OBJC)
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -76,12 +76,22 @@ FetchContent_MakeAvailable(civetweb)
 # Application
 # ============================================================
 
+set(YV_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/yume.icns")
+
+set_source_files_properties("${YV_ICON}"
+    PROPERTIES
+        MACOSX_PACKAGE_LOCATION "Resources"
+)
+
 add_executable(${PROJECT_NAME}
     MACOSX_BUNDLE
 
     src/main.c
     src/yv.c
     src/yv_www.c
+    src/yv/yv_macos_menu.m
+
+    "${YV_ICON}"
 )
 
 
@@ -103,17 +113,15 @@ target_include_directories(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE TRUE
 
-    MACOSX_BUNDLE_BUNDLE_NAME
-        "yv"
+    MACOSX_BUNDLE_BUNDLE_NAME "yv"
 
-    MACOSX_BUNDLE_SHORT_VERSION_STRING
-        "${YV_VERSION}"
+    MACOSX_BUNDLE_SHORT_VERSION_STRING "${YV_VERSION}"
 
-    MACOSX_BUNDLE_BUNDLE_VERSION
-        "${YV_VERSION}"
+    MACOSX_BUNDLE_BUNDLE_VERSION "${YV_VERSION}"
 
-    MACOSX_BUNDLE_GUI_IDENTIFIER
-        "com.kuchinashi4yume.yv"
+    MACOSX_BUNDLE_GUI_IDENTIFIER "com.kuchinashi4yume.yv"
+
+    MACOSX_BUNDLE_ICON_FILE "yume.icns"
 )
 
 
@@ -179,6 +187,12 @@ target_sources(
 # Compiler warnings
 # ============================================================
 
+set_source_files_properties(
+    src/yv/yv_macos_menu.m
+    PROPERTIES
+        COMPILE_OPTIONS "-fobjc-arc"
+)
+
 target_compile_options(${PROJECT_NAME}
     PRIVATE
         -Wall
@@ -196,6 +210,7 @@ target_link_libraries(${PROJECT_NAME}
         webview::core_static
         civetweb-c-library
         "-framework CoreFoundation"
+        "-framework Cocoa"
 )
 
 

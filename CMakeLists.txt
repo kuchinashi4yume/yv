@@ -10,6 +10,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Older FetchContent dependencies use policy versions below 3.10.
+set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
+
 set(YV_VERSION 0.0.2)
 
 
@@ -36,6 +39,40 @@ FetchContent_MakeAvailable(webview)
 
 
 # ============================================================
+# HTTP server dependency
+# ============================================================
+
+FetchContent_Declare(
+    civetweb
+    GIT_REPOSITORY https://github.com/civetweb/civetweb.git
+    GIT_TAG v1.16
+)
+
+set(CIVETWEB_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+
+set(CIVETWEB_ENABLE_SERVER_EXECUTABLE OFF CACHE BOOL "" FORCE)
+set(CIVETWEB_INSTALL_EXECUTABLE OFF CACHE BOOL "" FORCE)
+
+set(CIVETWEB_ENABLE_CXX OFF CACHE BOOL "" FORCE)
+
+set(CIVETWEB_ENABLE_WEBSOCKETS OFF CACHE BOOL "" FORCE)
+set(CIVETWEB_ENABLE_HTTP2 OFF CACHE BOOL "" FORCE)
+set(CIVETWEB_ENABLE_IPV6 OFF CACHE BOOL "" FORCE)
+
+set(CIVETWEB_ENABLE_LUA OFF CACHE BOOL "" FORCE)
+set(CIVETWEB_ENABLE_DUKTAPE OFF CACHE BOOL "" FORCE)
+set(CIVETWEB_ENABLE_SERVER_STATS OFF CACHE BOOL "" FORCE)
+set(CIVETWEB_ENABLE_X_DOM_SOCKET OFF CACHE BOOL "" FORCE)
+
+set(CIVETWEB_ENABLE_SSL OFF CACHE BOOL "" FORCE)
+set(CIVETWEB_ENABLE_ZLIB OFF CACHE BOOL "" FORCE)
+
+set(CIVETWEB_ENABLE_ASAN OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(civetweb)
+
+
+# ============================================================
 # Application
 # ============================================================
 
@@ -44,6 +81,7 @@ add_executable(${PROJECT_NAME}
 
     src/main.c
     src/yv.c
+    src/yv_www.c
 )
 
 
@@ -141,8 +179,7 @@ target_sources(
 # Compiler warnings
 # ============================================================
 
-target_compile_options(
-    ${PROJECT_NAME}
+target_compile_options(${PROJECT_NAME}
     PRIVATE
         -Wall
         -Wextra
@@ -154,10 +191,11 @@ target_compile_options(
 # Libraries
 # ============================================================
 
-target_link_libraries(
-    ${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME}
     PRIVATE
         webview::core_static
+        civetweb-c-library
+        "-framework CoreFoundation"
 )
 
 

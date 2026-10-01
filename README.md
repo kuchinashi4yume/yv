@@ -8,4 +8,4 @@
 ---
 
 ## 1. What is this?
-- The yv is meaning `yume + view`. `yume` is my nickname, `view` is meaning webview.
+- The yv is meaning `yume + view(webview)`.

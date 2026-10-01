@@ -1,6 +1,4 @@
-#include <stdio.h>
-
-void run(void);
+#include <yv.h>
 
 int main(void) {
     run();

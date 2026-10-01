@@ -50,9 +50,9 @@ The goal is to provide a lightweight foundation for building desktop application
 
 ## 2. Current Status
 
-### 0.1.0 — WebView MVP
+### 0.1.2 — WebView MVP
 
-`yv 0.1.0` is the first minimal working MVP.
+`yv 0.1.2` is the first minimal working MVP.
 
 Currently supported:
 
@@ -77,7 +77,7 @@ There is currently no built-in:
 * System tray
 * Cross-platform support
 
-These are outside the scope of `0.1.0`.
+These are outside the scope of `0.1.2`.
 
 <br>
 
@@ -208,4 +208,4 @@ The exact direction may evolve as the project develops.
 
 **C + WebView + HTML/CSS/JavaScript**
 
-Built from scratch, one layer at a time.
+Built incrementally from small, focused components.

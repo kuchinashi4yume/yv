@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-void run(void) {
+void yv_run(void) {
     unsigned short port = 0;
     if (yv_http_start(NULL, &port) != 0) return;
 

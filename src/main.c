@@ -1,6 +1,6 @@
 #include <yv.h>
 
 int main(void) {
-    run();
+    yv_run();
     return 0;
 }

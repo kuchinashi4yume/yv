@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Older FetchContent dependencies use policy versions below 3.10.
 set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
 
-set(YV_VERSION 0.0.2)
+set(YV_VERSION 0.1.2)
 
 
 # ============================================================

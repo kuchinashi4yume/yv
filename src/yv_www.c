@@ -45,7 +45,7 @@ int yv_http_start(const char *document_root, unsigned short *port) {
 
     char resolved_root[PATH_MAX];
     if (yv_http_resolve_document_root(document_root, resolved_root, sizeof(resolved_root)) != 0) {
-        fprintf(stderr, "yv: unable to resolve document root: %s\n", document_root);
+        fprintf(stderr, "yv: unable to resolve document root\n");
         return -1;
     }
 

@@ -31,6 +31,7 @@ void yv_run(void) {
     webview_error_t navigate_error = webview_navigate(webview, url);
     if (navigate_error != WEBVIEW_ERROR_OK) {
         fprintf(stderr, "yv: failed to navigate webview: %d\n", (int)navigate_error);
+        webview_destroy(webview);
         yv_www_stop();
         return;
     }
@@ -38,6 +39,7 @@ void yv_run(void) {
     webview_error_t run_error = webview_run(webview);
     if (run_error != WEBVIEW_ERROR_OK) {
         fprintf(stderr, "yv: failed to run webview: %d\n", (int)run_error);
+        webview_destroy(webview);
         yv_www_stop();
         return;
     }

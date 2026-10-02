@@ -8,18 +8,18 @@
 
 void yv_run(void) {
     unsigned short port = 0;
-    if (yv_http_start(NULL, &port) != 0) return;
+    if (yv_www_start(NULL, &port) != 0) return;
 
     char url[64];
     int written = snprintf(url, sizeof(url), "http://127.0.0.1:%u/", port);
     if (written < 0 || (size_t)written >= sizeof(url)) {
-        yv_http_stop();
+        yv_www_stop();
         return;
     }
 
     webview_t webview = webview_create(0, 0);
     if (webview == NULL) {
-        yv_http_stop();
+        yv_www_stop();
         return;
     }
 
@@ -28,10 +28,20 @@ void yv_run(void) {
     
     yv_macos_menu_setup();
 
-    webview_navigate(webview, url);
+    webview_error_t navigate_error = webview_navigate(webview, url);
+    if (navigate_error != WEBVIEW_ERROR_OK) {
+        fprintf(stderr, "yv: failed to navigate webview: %d\n", (int)navigate_error);
+        yv_www_stop();
+        return;
+    }
 
-    webview_run(webview);
+    webview_error_t run_error = webview_run(webview);
+    if (run_error != WEBVIEW_ERROR_OK) {
+        fprintf(stderr, "yv: failed to run webview: %d\n", (int)run_error);
+        yv_www_stop();
+        return;
+    }
     
     webview_destroy(webview);
-    yv_http_stop();
+    yv_www_stop();
 }

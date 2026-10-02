@@ -40,7 +40,7 @@ static int yv_http_resolve_document_root(const char *document_root, char *resolv
 }
 
 
-int yv_http_start(const char *document_root, unsigned short *port) {
+int yv_www_start(const char *document_root, unsigned short *port) {
     if (yv_http_context != NULL) return -1;
 
     char resolved_root[PATH_MAX];
@@ -49,7 +49,10 @@ int yv_http_start(const char *document_root, unsigned short *port) {
         return -1;
     }
 
-    mg_init_library(0);
+    if (mg_init_library(0) == 0) {
+        fprintf(stderr, "yv: failed to initialize CivetWeb\n");
+        return -1;
+    }
 
     const char *options[] = {
         "document_root",
@@ -89,7 +92,7 @@ int yv_http_start(const char *document_root, unsigned short *port) {
 }
 
 
-void yv_http_stop(void) {
+void yv_www_stop(void) {
     if (yv_http_context == NULL) return;
     mg_stop(yv_http_context);
     yv_http_context = NULL;

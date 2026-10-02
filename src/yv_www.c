@@ -49,7 +49,8 @@ int yv_www_start(const char *document_root, unsigned short *port) {
         return -1;
     }
 
-    if (mg_init_library(0) == 0) {
+    // Check: https://github.com/civetweb/civetweb/blob/master/docs/api/mg_init_library.md
+    if (mg_init_library(MG_FEATURES_FILES) == 0) {
         fprintf(stderr, "yv: failed to initialize CivetWeb\n");
         return -1;
     }

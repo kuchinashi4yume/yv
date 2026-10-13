@@ -26,6 +26,8 @@ void yv_run(void) {
     webview_set_title(webview, "yv");
     webview_set_size(webview, 800, 600, WEBVIEW_HINT_NONE);
     
+    yv_macos_window_set_min_size(webview_get_window(webview), 800, 600);
+    
     yv_macos_menu_setup();
 
     webview_error_t navigate_error = webview_navigate(webview, url);

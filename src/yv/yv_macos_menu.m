@@ -2,6 +2,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+void yv_macos_window_set_min_size(void *native_window, double width, double height) {
+    if (native_window == NULL) return;
+    NSWindow *window = (__bridge NSWindow *)native_window;
+    [window setMinSize:NSMakeSize(width, height)];
+}
+
 void yv_macos_menu_setup(void) {
     NSApplication *app = [NSApplication sharedApplication];
     NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"Main Menu"];

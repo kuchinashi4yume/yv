@@ -6,9 +6,7 @@
 
 <p align="center">
   <strong>A lightweight C-based WebView runtime for macOS.</strong>
-</p>
-
-<p align="center">
+  <br>
   Build desktop applications with C, HTML, CSS, and JavaScript.
 </p>
 

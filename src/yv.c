@@ -7,11 +7,11 @@
 
 #include <stdio.h>
 
-void yv_run(void) {
+int yv_run(void) {
     unsigned short port = 0;
     if (yv_www_start(NULL, &port) != 0) {
         yv_show_error("failed to start the local http server");
-        return;
+        return 1;
     }
 
     char url[64];
@@ -19,14 +19,14 @@ void yv_run(void) {
     if (written < 0 || (size_t)written >= sizeof(url)) {
         yv_www_stop();
         yv_show_error("failed to construct the local url");
-        return;
+        return 1;
     }
 
     webview_t webview = webview_create(0, 0);
     if (webview == NULL) {
         yv_www_stop();
         yv_show_error("failed to create webview");
-        return;
+        return 1;
     }
 
     char msg[64];
@@ -37,7 +37,7 @@ void yv_run(void) {
         webview_destroy(webview);
         yv_www_stop();
         yv_show_error(msg);
-        return;
+        return 1;
     }
     
     webview_error_t error_set_size = webview_set_size(webview, YV_WINDOW_WIDTH, YV_WINDOW_HEIGHT, WEBVIEW_HINT_NONE);
@@ -46,7 +46,7 @@ void yv_run(void) {
         webview_destroy(webview);
         yv_www_stop();
         yv_show_error(msg);
-        return;
+        return 1;
     }
     
     yv_macos_window_set_min_size(webview_get_window(webview), YV_WINDOW_MIN_WIDTH, YV_WINDOW_MIN_HEIGHT);
@@ -59,7 +59,7 @@ void yv_run(void) {
         webview_destroy(webview);
         yv_www_stop();
         yv_show_error(msg);
-        return;
+        return 1;
     }
 
     webview_error_t run_error = webview_run(webview);
@@ -68,9 +68,11 @@ void yv_run(void) {
         webview_destroy(webview);
         yv_www_stop();
         yv_show_error(msg);
-        return;
+        return 1;
     }
     
     webview_destroy(webview);
     yv_www_stop();
+
+    return 0;
 }

@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-void yv_run(void);
+int yv_run(void);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,23 @@
-#include "yv_macos_menu.h"
+#include "yv_macos.h"
 
+#include <AppKit/AppKit.h>
 #import <Cocoa/Cocoa.h>
+#include <Foundation/Foundation.h>
+
+NSString *APP_NAME = @"yv";
+
+void yv_show_error(const char *message) {
+    [NSApplication sharedApplication];
+
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.alertStyle = NSAlertStyleCritical;
+    alert.messageText = APP_NAME;
+    alert.informativeText =
+        message != NULL
+            ? [NSString stringWithUTF8String:message]
+            : @"An unknown error occurred.";
+    [alert runModal];
+}
 
 void yv_macos_window_set_min_size(void *native_window, double width, double height) {
     if (native_window == NULL) return;
@@ -16,16 +33,17 @@ void yv_macos_menu_setup(void) {
     NSMenuItem *applicationMenuItem = [[NSMenuItem alloc] init];
     [mainMenu addItem:applicationMenuItem];
 
-    NSMenu *applicationMenu = [[NSMenu alloc] initWithTitle:@"yv"];
+    NSMenu *applicationMenu = [[NSMenu alloc] initWithTitle:APP_NAME];
     [mainMenu setSubmenu:
         applicationMenu
         forItem:
             applicationMenuItem];
 
     // About
+    NSString *strAboutItem = @"About ";
     NSMenuItem *aboutItem =
         [[NSMenuItem alloc]
-            initWithTitle:@"About yv"
+            initWithTitle:[strAboutItem stringByAppendingString:APP_NAME]
             action:@selector(orderFrontStandardAboutPanel:)
             keyEquivalent:@""];
     [aboutItem setTarget:app];
@@ -35,9 +53,10 @@ void yv_macos_menu_setup(void) {
     [applicationMenu addItem:[NSMenuItem separatorItem]];
 
     // Quit
+    NSString *strQuitItem = @"Quit ";
     NSMenuItem *quitItem =
         [[NSMenuItem alloc]
-            initWithTitle:@"Quit yv"
+            initWithTitle:[strQuitItem stringByAppendingString:APP_NAME]
             action:@selector(terminate:)
             keyEquivalent:@"q"];
 

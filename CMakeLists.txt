@@ -89,7 +89,7 @@ add_executable(${PROJECT_NAME}
     src/main.c
     src/yv.c
     src/yv_www.c
-    src/yv/yv_macos_menu.m
+    src/yv/yv_macos.m
 
     "${YV_ICON}"
 )

@@ -1,10 +1,11 @@
+#include "yv_config.h"
 #include "yv_macos.h"
 
 #include <AppKit/AppKit.h>
 #import <Cocoa/Cocoa.h>
 #include <Foundation/Foundation.h>
 
-NSString *APP_NAME = @"yv";
+NSString *APP_NAME = @YV_PRODUCT_NAME;
 
 void yv_show_error(const char *message) {
     [NSApplication sharedApplication];

@@ -1,4 +1,5 @@
 #include "yv.h"
+#include "yv_config.h"
 #include "yv_www.h"
 #include "yv/yv_macos.h"
 
@@ -30,7 +31,7 @@ void yv_run(void) {
 
     char msg[64];
 
-    webview_error_t error_set_title = webview_set_title(webview, "yv");
+    webview_error_t error_set_title = webview_set_title(webview, YV_WINDOW_TITLE);
     if (error_set_title != WEBVIEW_ERROR_OK) {
         snprintf(msg, sizeof(msg), "failed to set webview title.\nerror code: %d", (int)error_set_title);
         webview_destroy(webview);
@@ -39,7 +40,7 @@ void yv_run(void) {
         return;
     }
     
-    webview_error_t error_set_size = webview_set_size(webview, 800, 600, WEBVIEW_HINT_NONE);
+    webview_error_t error_set_size = webview_set_size(webview, YV_WINDOW_WIDTH, YV_WINDOW_HEIGHT, WEBVIEW_HINT_NONE);
     if (error_set_size != WEBVIEW_ERROR_OK) {
         snprintf(msg, sizeof(msg), "failed to set webview size.\nerror code: %d", (int)error_set_size);
         webview_destroy(webview);
@@ -48,7 +49,7 @@ void yv_run(void) {
         return;
     }
     
-    yv_macos_window_set_min_size(webview_get_window(webview), 800, 600);
+    yv_macos_window_set_min_size(webview_get_window(webview), YV_WINDOW_MIN_WIDTH, YV_WINDOW_MIN_HEIGHT);
     
     yv_macos_menu_setup();
 

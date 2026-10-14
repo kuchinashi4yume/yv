@@ -33,14 +33,14 @@ The goal is to provide a lightweight foundation for building desktop application
 - macOS Only
 - WebView-based desktop applications
 - Local static asset serving
-- HTML / CSS / JavaScript
+- HTML / CSS / TypeScript / esbuild
 - Basic macOS application menu
 - Custom application icon
 
 <br>
 
 ## 3. Roadmaps
-- [ ] TypeScript with esbuild
+- [x] TypeScript with esbuild
 - [ ] Tailwind CSS
 - [ ] HTMX
 - [ ] LLM

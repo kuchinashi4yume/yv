@@ -64,4 +64,4 @@ webbuild:
 	fi
 
 clean:
-	@rm -rf .cache $(DIR_BUILD) $(DIR_DIST)
+	@rm -rf .cache $(DIR_BUILD) $(DIR_DIST) ${WEB_DIST}

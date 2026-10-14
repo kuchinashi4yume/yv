@@ -1,6 +1,6 @@
 {
   "name": "yv",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "identifier": "com.example.app",
   "frontendDist": "www/dist",
   "window": {

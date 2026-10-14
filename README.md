@@ -43,16 +43,16 @@ The goal is to provide a lightweight foundation for building desktop application
 
 ## 3. Roadmaps
 - [ ] TypeScript with esbuild
-- [ ] tailwindcss
-- [ ] htmx
-- [ ] LLM API abstraction
-  - [ ] Ollama
-  - [ ] llama.cpp
-  - [ ] ...
+- [ ] Tailwind CSS
+- [ ] HTMX
+- [ ] LLM
+  - [ ] Ollama (API)
+  - [ ] llama.cpp (Built-in, for Local Model)
+  - [ ] OpenAI, Anthropic, Google, xAI, ...
 - [ ] Windows and Linux support
 - [ ] Python
-- [ ] WASM
-- [ ] HTTP RESTful or WebSocket (CivetWeb)
+- [ ] WASM (To help with high-performance operations in the frontend)
+- [ ] WebSocket for serving local application assets
 
 <br>
 

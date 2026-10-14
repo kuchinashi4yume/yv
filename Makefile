@@ -36,6 +36,7 @@ dev:
 	@open -n ./$(APP_DEV)
 
 build:
+	@$(MAKE) webbuild
 	@cmake -S . -B $(DIR_BUILD) -G $(GENERATOR) -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.10
 	@cmake --build $(DIR_BUILD)
 	@cmake --install $(DIR_BUILD) --prefix $(DIR_DIST)

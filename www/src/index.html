@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./style.css">
+        <script src="./vendor/htmx@4.0.0.min.js"></script>
+    </head>
+    <body>
+        <img src="./assets/yume.png" width="128" />
+        <br>
+        <p id="start">yv!</p>
+        <br>
+        <br>
+        <button
+            hx-get="/greet"
+            hx-target="#start"
+            hx-swap="outerHTML"
+        >GET /greet</button>
+        <script src="./main.js" defer></script>
+    </body>
+</html>

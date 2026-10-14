@@ -1,8 +1,8 @@
 {
   "name": "yv",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "identifier": "com.example.app",
-  "frontendDist": "www",
+  "frontendDist": "www/dist",
   "window": {
     "title": "yv",
     "width": 800,
@@ -10,5 +10,5 @@
     "minWidth": 800,
     "minHeight": 600
   },
-  "icon": "resources/yume.icns"
+  "icon": "icon.icns"
 }

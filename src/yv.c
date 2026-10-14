@@ -22,7 +22,7 @@ int yv_run(void) {
         return 1;
     }
 
-    webview_t webview = webview_create(0, 0);
+    webview_t webview = webview_create(1, 0);
     if (webview == NULL) {
         yv_www_stop();
         yv_show_error("failed to create webview");

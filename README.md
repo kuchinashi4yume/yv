@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./resources/yume.iconset/icon_128x128@2x.png" width="128" alt="yv icon" />
+  <img src="./_docs/yv.png" width="128" alt="yv icon" />
 </p>
 
 <h1 align="center">yv</h1>

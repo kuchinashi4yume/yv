@@ -13,6 +13,21 @@
 
 static struct mg_context *yv_http_context = NULL;
 
+static int yv_route_handler(struct mg_connection *conn, void *_) {const struct mg_request_info *ri = mg_get_request_info(conn);
+    const char *method = ri->request_method;
+    const char *uri = ri->local_uri;
+
+    // GET /greet
+    if (strcmp(method, "GET") == 0 && strcmp(uri, "/greet") == 0) {
+        const char *json = "<p class=\"test\">hello world yellow text</p>";
+        int len = (int)strlen(json);
+        mg_printf(conn, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: %d\r\n\r\n%s", len, json);
+        return 1;
+    }
+
+    return 0;
+}
+
 static int yv_http_resolve_document_root(const char *document_root, char *resolved_root, size_t resolved_root_size) {
     if (resolved_root == NULL || resolved_root_size == 0) return -1;
 
@@ -74,6 +89,8 @@ int yv_www_start(const char *document_root, unsigned short *port) {
         mg_exit_library();
         return -1;
     }
+
+    mg_set_request_handler(yv_http_context, "/", yv_route_handler, NULL);
 
     struct mg_server_port server_port;
     int count = mg_get_server_ports(yv_http_context, 1, &server_port);

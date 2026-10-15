@@ -7,8 +7,33 @@
 <p align="center">
   <strong>A lightweight C-based WebView runtime for macOS.</strong>
   <br>
-  Build desktop applications with C, HTML, CSS, and JavaScript.
+  Build desktop applications with C, HTML, CSS, and JavaScript/TypeScript.
 </p>
+
+<br>
+
+## 0. Quick Start
+
+### Requirements
+- Xcode Command Line Tools (macOS only)
+- CMake, Ninja, C compiler with C17 support
+- Node.js 22+
+
+### Start
+```bash
+# Create Project
+npm create yv@latest myapp
+cd myapp
+
+# Start the application in development mode
+make
+
+# Build the application for production
+make build
+
+# Launch the built application packaged file
+open -n dist/myapp.app
+```
 
 <br>
 
@@ -19,13 +44,25 @@ The name comes from: `yume + view`.
 <br>
 `yume` comes from the author's name, and `view` refers to the WebView at the core of the runtime.
 
-The basic idea is simple:
-- **C** for the native runtime
-- **HTML / CSS / JavaScript** for the application UI
-- **WebView** for rendering
-- **HTTP** for serving local application assets
+### How It Works
+At a high level, `yv` combines a few small components:
 
-The goal is to provide a lightweight foundation for building desktop applications without requiring a large application runtime.
+```mermaid
+flowchart TB
+  Frontend --- WebView
+  WebView --- yv_layer
+  
+  yv_layer["yv\nnative application layer"]
+  
+  yv_layer --- Local_Server["Local HTTP server"]
+  Local_Server --- macOS
+```
+
+`yv` does not implement the platform WebView itself.
+
+Instead, it uses the existing [`webview/webview`](https://github.com/webview/webview) project as the WebView abstraction layer and [`CivetWeb`](https://github.com/civetweb/civetweb) for serving local application assets.
+
+This keeps the runtime focused on the application layer rather than reimplementing platform-specific WebView functionality.
 
 <br>
 
@@ -51,65 +88,3 @@ The goal is to provide a lightweight foundation for building desktop application
 - [ ] Python
 - [ ] WASM (To help with high-performance operations in the frontend)
 - [ ] WebSocket for serving local application assets
-
-<br>
-
-## 4. How It Works
-At a high level, `yv` combines a few small components:
-
-```text
-┌───────────────────────────────┐
-│        HTML / CSS / JS        │
-├───────────────────────────────┤
-│            WebView            │
-├───────────────────────────────┤
-│              yv               │
-│     native application layer  │
-├───────────────────────────────┤
-│      Local HTTP server        │
-├───────────────────────────────┤
-│             macOS             │
-└───────────────────────────────┘
-```
-
-`yv` does not implement the platform WebView itself.
-
-Instead, it uses the existing [`webview/webview`](https://github.com/webview/webview) project as the WebView abstraction layer and [`CivetWeb`](https://github.com/civetweb/civetweb) for serving local application assets.
-
-This keeps the runtime focused on the application layer rather than reimplementing platform-specific WebView functionality.
-
-<br>
-
-## 5. Build
-
-### Requirements
-- macOS
-- CMake
-- Ninja
-- C compiler with C17 support
-
-### Build
-```bash
-git clone https://github.com/kuchinashi4yume/yv.git
-cd yv
-
-make
-```
-
-The generated application bundle will be placed under:
-
-```text
-build/yv.app
-```
-
-A release build can be created with:
-
-```bash
-make build
-```
-
-which installs the application into:
-
-```text
-dist/yv.app
-```

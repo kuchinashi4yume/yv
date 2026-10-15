@@ -1,11 +1,18 @@
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Set CMake Minimum Version
+# Set ${PROJECT_NAME}
+#------------------------------------------------------------------------------------------------------------------------------------- 
 cmake_minimum_required(VERSION 3.20)
 
 project(yv LANGUAGES C CXX OBJC)
 
-# ============================================================
-# Language and build settings
-# ============================================================
 
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Language and build settings
+#-------------------------------------------------------------------------------------------------------------------------------------
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -14,18 +21,42 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# ============================================================
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Default Environment Variables
+#-------------------------------------------------------------------------------------------------------------------------------------
+
+# config file name
+set(YV_CONFIG_FILE_NAME "yv")
+
+# config file
+set(YV_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
+set(YV_CONFIG_HEADER_IN_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/yv_config.h.in")
+set(YV_CONFIG_HEADER_PATH "${YV_GENERATED_DIR}/yv_config.h")
+
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
 # Read and validate application configuration
-# ============================================================
+#-------------------------------------------------------------------------------------------------------------------------------------
 
-set(YV_CONFIG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/yv")
+# Set config json file path
+set(YV_CONFIG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${YV_CONFIG_FILE_NAME}")
 
+# Check config json file is exists
 if(NOT EXISTS "${YV_CONFIG_FILE}")
     message(FATAL_ERROR "Missing configuration file: ${YV_CONFIG_FILE}")
 endif()
 
+# Read config json file
 file(READ "${YV_CONFIG_FILE}" YV_CONFIG_JSON)
 
+# Check the config json file is a valid json file
 string(JSON YV_CONFIG_ROOT_TYPE
     ERROR_VARIABLE YV_CONFIG_JSON_ERROR
     TYPE "${YV_CONFIG_JSON}"
@@ -43,9 +74,16 @@ if(NOT YV_CONFIG_ROOT_TYPE STREQUAL "OBJECT")
     )
 endif()
 
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
 # Read a required field and verify its JSON type.
-# Usage: yv_json_get_required(OUTPUT_VARIABLE STRING productName)
-#        yv_json_get_required(OUTPUT_VARIABLE NUMBER app window width)
+#-------------------------------------------------------------------------------------------------------------------------------------
+
+# Usage: yv_json_get_required(OUTPUT_VARIABLE STRING name)
+#        yv_json_get_required(OUTPUT_VARIABLE NUMBER window width)
 function(yv_json_get_required OUTPUT_VARIABLE EXPECTED_TYPE)
     string(JOIN "." _field_path ${ARGN})
 
@@ -92,20 +130,24 @@ yv_json_get_required(YV_WINDOW_MIN_WIDTH NUMBER window minWidth)
 yv_json_get_required(YV_WINDOW_MIN_HEIGHT NUMBER window minHeight)
 yv_json_get_required(YV_ICON_RELATIVE_PATH STRING icon)
 
+# check; name 
 if(YV_PRODUCT_NAME STREQUAL "")
-    message(FATAL_ERROR "${YV_CONFIG_FILE}: 'productName' must not be empty")
+    message(FATAL_ERROR "${YV_CONFIG_FILE}: 'name' must not be empty")
 endif()
 
+# check; window.title 
 if(YV_WINDOW_TITLE STREQUAL "")
-    message(FATAL_ERROR "${YV_CONFIG_FILE}: 'app.window.title' must not be empty")
+    message(FATAL_ERROR "${YV_CONFIG_FILE}: 'window.title' must not be empty")
 endif()
 
+# check; version
 if(NOT YV_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
     message(FATAL_ERROR
         "${YV_CONFIG_FILE}: 'version' must use MAJOR.MINOR.PATCH format, e.g. 0.2.0"
     )
 endif()
 
+# check; identifer
 if(NOT YV_IDENTIFIER MATCHES "^[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+$")
     message(FATAL_ERROR
         "${YV_CONFIG_FILE}: 'identifier' must be a reverse-DNS-style identifier, "
@@ -113,6 +155,7 @@ if(NOT YV_IDENTIFIER MATCHES "^[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+$")
     )
 endif()
 
+# check; width height minWidth minHeight
 foreach(_dimension IN ITEMS
     YV_WINDOW_WIDTH
     YV_WINDOW_HEIGHT
@@ -126,29 +169,31 @@ foreach(_dimension IN ITEMS
     endif()
 endforeach()
 
+# check; width > minWidth
 if(YV_WINDOW_WIDTH LESS YV_WINDOW_MIN_WIDTH)
     message(FATAL_ERROR
-        "${YV_CONFIG_FILE}: app.window.width must be greater than or equal to minWidth"
+        "${YV_CONFIG_FILE}: window.width must be greater than or equal to minWidth"
     )
 endif()
 
+# check; height > minHeight
 if(YV_WINDOW_HEIGHT LESS YV_WINDOW_MIN_HEIGHT)
     message(FATAL_ERROR
-        "${YV_CONFIG_FILE}: app.window.height must be greater than or equal to minHeight"
+        "${YV_CONFIG_FILE}: window.height must be greater than or equal to minHeight"
     )
 endif()
 
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
 # Resolve configured paths relative to the project root.
+#-------------------------------------------------------------------------------------------------------------------------------------
+# is frontendDist exists
 get_filename_component(
     YV_FRONTEND_DIR
     "${YV_FRONTEND_DIST}"
-    ABSOLUTE
-    BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
-)
-
-get_filename_component(
-    YV_ICON_PATH
-    "${YV_ICON_RELATIVE_PATH}"
     ABSOLUTE
     BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
 )
@@ -159,15 +204,30 @@ if(NOT IS_DIRECTORY "${YV_FRONTEND_DIR}")
     )
 endif()
 
+# is icon exists
+get_filename_component(
+    YV_ICON_PATH
+    "${YV_ICON_RELATIVE_PATH}"
+    ABSOLUTE
+    BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
+)
+
 if(NOT EXISTS "${YV_ICON_PATH}")
     message(FATAL_ERROR
         "${YV_CONFIG_FILE}: icon file does not exist: ${YV_ICON_PATH}"
     )
 endif()
 
+# set icon
 get_filename_component(YV_ICON_NAME "${YV_ICON_PATH}" NAME)
 
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
 # Escape string values so they can be safely emitted as C string literals.
+#-------------------------------------------------------------------------------------------------------------------------------------
 function(yv_escape_c_string INPUT_VARIABLE OUTPUT_VARIABLE)
     set(_value "${INPUT_VARIABLE}")
 
@@ -187,20 +247,28 @@ endfunction()
 yv_escape_c_string("${YV_PRODUCT_NAME}" YV_PRODUCT_NAME_C)
 yv_escape_c_string("${YV_WINDOW_TITLE}" YV_WINDOW_TITLE_C)
 
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
 # Generate the header consumed by the C and Objective-C application code.
-set(YV_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
+#-------------------------------------------------------------------------------------------------------------------------------------
 file(MAKE_DIRECTORY "${YV_GENERATED_DIR}")
 
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/yv_config.h.in"
-    "${YV_GENERATED_DIR}/yv_config.h"
+    ${YV_CONFIG_HEADER_IN_PATH}
+    ${YV_CONFIG_HEADER_PATH}
     @ONLY
 )
 
-# ============================================================
-# Dependencies
-# ============================================================
 
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Dependencies: Initialize
+#-------------------------------------------------------------------------------------------------------------------------------------
 include(FetchContent)
 
 # CMake 4.x: provide a policy floor for third-party subprojects.
@@ -209,6 +277,13 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.0)
     set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
 endif()
 
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Dependencies: webview/webview
+#-------------------------------------------------------------------------------------------------------------------------------------
 FetchContent_Declare(
     webview
     GIT_REPOSITORY https://github.com/webview/webview.git
@@ -224,6 +299,13 @@ set(WEBVIEW_BUILD_SHARED_LIBRARY OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(webview)
 
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Dependencies: civetweb/civetweb
+#-------------------------------------------------------------------------------------------------------------------------------------
 FetchContent_Declare(
     civetweb
     GIT_REPOSITORY https://github.com/civetweb/civetweb.git
@@ -247,10 +329,13 @@ set(CIVETWEB_ENABLE_ASAN OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(civetweb)
 
-# ============================================================
-# Application target and bundle resources
-# ============================================================
 
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Application target and bundle resources
+#-------------------------------------------------------------------------------------------------------------------------------------
 set_source_files_properties(
     "${YV_ICON_PATH}"
     PROPERTIES
@@ -264,13 +349,16 @@ add_executable(${PROJECT_NAME}
     src/yv_www.c
     src/yv/yv_macos.m
     "${YV_ICON_PATH}"
-    "${YV_GENERATED_DIR}/yv_config.h"
+    ${YV_CONFIG_HEADER_PATH}
 )
 
-# ============================================================
-# Web assets
-# ============================================================
 
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Web assets
+#-------------------------------------------------------------------------------------------------------------------------------------
 file(GLOB_RECURSE YV_WEB_FILES
     CONFIGURE_DEPENDS
     LIST_DIRECTORIES FALSE
@@ -312,10 +400,13 @@ target_sources(${PROJECT_NAME}
         ${YV_WEB_FILES}
 )
 
-# ============================================================
-# Include directories and compiler options
-# ============================================================
 
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Include directories and compiler options
+#-------------------------------------------------------------------------------------------------------------------------------------
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
@@ -336,10 +427,13 @@ target_compile_options(${PROJECT_NAME}
         -Wpedantic
 )
 
-# ============================================================
-# macOS bundle metadata
-# ============================================================
 
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# macOS bundle metadata
+#-------------------------------------------------------------------------------------------------------------------------------------
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_BUNDLE_NAME "${YV_PRODUCT_NAME}"
     MACOSX_BUNDLE_SHORT_VERSION_STRING "${YV_VERSION}"
@@ -348,10 +442,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_ICON_FILE "${YV_ICON_NAME}"
 )
 
-# ============================================================
-# Link libraries
-# ============================================================
 
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Link libraries
+#-------------------------------------------------------------------------------------------------------------------------------------
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         webview::core_static
@@ -360,10 +457,13 @@ target_link_libraries(${PROJECT_NAME}
         "-framework Cocoa"
 )
 
-# ============================================================
-# Install
-# ============================================================
 
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Install
+#-------------------------------------------------------------------------------------------------------------------------------------
 install(
     TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .

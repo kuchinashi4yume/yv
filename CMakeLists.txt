@@ -30,7 +30,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #-------------------------------------------------------------------------------------------------------------------------------------
 
 # config file name
-set(YV_CONFIG_FILE_NAME "yv")
+set(YV_CONFIG_FILE_NAME "yv_config.json")
 
 # config file
 set(YV_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")

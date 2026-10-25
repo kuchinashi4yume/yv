@@ -4,7 +4,7 @@
 #------------------------------------------------------------------------------------------------------------------------------------- 
 cmake_minimum_required(VERSION 3.20)
 
-project(yv LANGUAGES C CXX OBJC)
+project(__PLACEHOLDER__YV__PROJECT_NAME__YV__ LANGUAGES C CXX OBJC)
 
 
 
